@@ -5,6 +5,7 @@ from ultralytics import YOLO
 import cv2 as cv
 import numpy as np
 
+
 video_feed = cv.VideoCapture(0)
 model = YOLO("yolov8n.pt")
 
