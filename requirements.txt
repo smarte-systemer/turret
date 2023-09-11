@@ -1,3 +1,9 @@
 numpy
+tflite-model-maker
+#opencv-python-headless==4.1.2.30
+opencv-python-headless
 #opencv-python
-ultralytics
+#ultralytics
+#tensorflow==2.8.0
+tensorflow
+pycocotools
