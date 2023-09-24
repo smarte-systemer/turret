@@ -22,29 +22,29 @@ class Communication:
             frame (cv2.typing.MatLike): Frame from video stream
 
         Raises:
-            Exception: _description_
+            Exception: Unable to encode frame
         """
         return_value, image_buffer = cv2.imencode(self.__image_format, frame)
-        if return_value:
-            image_buffer = image_buffer.tobytes()
-            number_of_packets = 1
-            if len(image_buffer) > self.__max_buffer_size:
-                number_of_packets = int(np.ceil(len(image_buffer)/self.__max_buffer_size))
-            
-            self.__socket.sendto(pickle.dumps({'packets':number_of_packets}), 
-                               self.__server)
-            left = 0
-            right = self.__max_buffer_size
-            for packet_index in range(number_of_packets):
-                payload = image_buffer[left:right]
-                left = right
-                right += self.__max_buffer_size
-                self.__socket.sendto(payload, self.__server)    
+        if not return_value: raise Exception('Unable to encode frame')
+        image_buffer = image_buffer.tobytes()
+        number_of_packets = 1
+        if len(image_buffer) > self.__max_buffer_size:
+            number_of_packets = int(np.ceil(len(image_buffer)/self.__max_buffer_size))
+        
+        self.__socket.sendto(pickle.dumps({'packets':number_of_packets}), 
+                            self.__server)
+        left = 0
+        right = self.__max_buffer_size
+        for packet_index in range(number_of_packets):
+            payload = image_buffer[left:right]
+            left = right
+            right += self.__max_buffer_size
+            self.__socket.sendto(payload, self.__server)    
     def __str__(self)->str:
         return self.__repr__
 
     def __repr__(self) -> str:
-        return f'''Role: {"Server" if self.__role else "Client"}
+        return f'''
                    Server: {self.__server}
                    Max buffer: {self.__max_buffer_size}
                    '''
