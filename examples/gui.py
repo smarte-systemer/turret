@@ -6,6 +6,9 @@
 import tkinter as tk
 import cv2
 from PIL import Image, ImageTk
+from ..turret.motor import motor,CLOCKWISE, COUNTERCLOCKWISE 
+
+motor_driver = motor(8,10,3)
 
 # Function to update the camera feed
 def update_camera_feed():
@@ -33,6 +36,13 @@ def fire():
     # Add your fire logic here
     print("Fire!!!!!!")
 
+def left():
+    motor_driver.drive(10, CLOCKWISE)
+def right():
+    motor_driver.drive(10, COUNTERCLOCKWISE)
+
+    
+
 # Create the main Tkinter window
 root = tk.Tk()
 root.title("Laptop Webcam Controller")
@@ -50,8 +60,8 @@ button_size = 4  # Adjust the size as needed
 
 up_button = tk.Button(d_pad_frame, text="▲", font=("Helvetica", 24), width=button_size, height=button_size)
 down_button = tk.Button(d_pad_frame, text="▼", font=("Helvetica", 24), width=button_size, height=button_size)
-left_button = tk.Button(d_pad_frame, text="◄", font=("Helvetica", 24), width=button_size, height=button_size)
-right_button = tk.Button(d_pad_frame, text="►", font=("Helvetica", 24), width=button_size, height=button_size)
+left_button = tk.Button(d_pad_frame, text="◄", font=("Helvetica", 24), width=button_size, height=button_size, command=left)
+right_button = tk.Button(d_pad_frame, text="►", font=("Helvetica", 24), width=button_size, height=button_size, command=right)
 
 up_button.grid(row=0, column=1)
 down_button.grid(row=2, column=1)
