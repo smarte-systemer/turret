@@ -4,11 +4,17 @@ import numpy as np
 import pickle
 
 class Communication:
-    """Class to simplify the communication interface to the image processor
-    Will stream video to specified server. 
-    """
     def __init__(self, server_address: str, server_port: int = 65000, 
                  max_buffer_size: int = 65500, image_format: str = '.jpg') -> None:
+        """Class to simplify the communication interface to the image processor
+           Will stream video to specified server. 
+
+        Args:
+            server_address: _description_
+            server_port: _description_. Defaults to 65000.
+            max_buffer_size: _description_. Defaults to 65500.
+            image_format: _description_. Defaults to '.jpg'.
+        """
         self.__socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.__server = (server_address, server_port)
         self.__max_buffer_size = max_buffer_size
@@ -16,10 +22,10 @@ class Communication:
 
     
     def send_frame(self, frame: cv2.typing.MatLike)->None:
-        """_summary_
-        Send individual frames
+        """Send individual frames
+
         Args:
-            frame (cv2.typing.MatLike): Frame from video stream
+            frame: Frame from video stream
 
         Raises:
             Exception: Unable to encode frame
