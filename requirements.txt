@@ -1,3 +1,7 @@
 numpy
-#opencv-python
+opencv-python
 ultralytics
+tk
+socket
+pickle
+pillow
