@@ -25,6 +25,9 @@ extensions = [
     "sphinx.ext.viewcode"
 ]
 
+myst_enable_extensions = ["amsmath",
+                          "dollarmath"]
+
 autodoc_member_order = "bysource"
 
 # https://sphinxcontrib-napoleon.readthedocs.io/en/latest/sphinxcontrib.napoleon.html
@@ -42,6 +45,7 @@ napoleon_use_rtype = True
 napoleon_use_keyword = True
 napoleon_custom_sections = None
 
+myst_dmath_allow_space = True
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']

@@ -9,9 +9,13 @@
 :relative-images:
 ```
 
+## Raspberry pi pinout
+```{image} GPIO-Pinout-Diagram.png
+```
+
 ```{toctree}
 :caption: 'Contents:'
-:maxdepth: 2
+:maxdepth: 4
 
 communication
 motor/motor

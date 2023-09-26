@@ -1,4 +1,4 @@
-# communication
+# Communication
 
 
 ```{eval-rst}

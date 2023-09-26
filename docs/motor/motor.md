@@ -1,8 +1,10 @@
 ```{include} Intro.md
 ```
 
+## Reference
+
 ```{eval-rst}
-.. autoclass:: turret.motor.motor
+.. automodule:: turret.motor
    :members:
    :undoc-members:
    :show-inheritance:
