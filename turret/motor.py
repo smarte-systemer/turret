@@ -24,7 +24,7 @@ class Motor:
         self.__direction_pin = direction_pin
         self.__period = 1/frequency
         self.__steps_per_revolutions = self.__get_revolutions(microstep)
-        
+        print(self.__steps_per_revolutions)
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.__pulse_pin, GPIO.OUT)
         GPIO.setup(self.__direction_pin, GPIO.OUT)
@@ -37,7 +37,7 @@ class Motor:
             steps: Number of steps to rotate
             direction:  Direction to rotate. Defaults to Direction.CLOCKWISE.
         """
-        GPIO.output(self.__direction_pin, direction)
+        GPIO.output(self.__direction_pin, bool(direction))
         for step in range(steps):
             GPIO.output(self.__pulse_pin, GPIO.HIGH)
             sleep(self.__period/2)
@@ -69,6 +69,7 @@ class Motor:
         Returns:
             Number of steps per revolution
         """
+        """
         match microstep:
               case '1':
                    return 200
@@ -84,3 +85,23 @@ class Motor:
                    return 3200
               case '32':
                    return 6400
+      """
+        if microstep == '1':
+            return 200
+        elif microstep == '2/A':
+            return 400
+        elif microstep == '2/B':
+            return 400
+        elif microstep == '4':
+            return 800
+        elif microstep == '8':
+            return 1600
+        elif microstep == '16':
+            return 3200
+        elif microstep == '32':
+            return 6400
+
+
+
+
+
