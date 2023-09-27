@@ -53,6 +53,13 @@ class Motor:
         """
         for revolution in range(revolutions):
              self.drive(self.__steps_per_revolutions, direction)
+    def set_frequency(self, frequency: int):
+        self.__period = 1/max(min(frequency, 13*10**3), 1)
+         
+    def get_period(self)->int:
+         return self.__period
+    def get__steps_per_revolutions(self):
+        return self.__steps_per_revolutions
     def __get_revolutions (self, microstep: str):
         """Matches microstep setting to steps per revolution
 

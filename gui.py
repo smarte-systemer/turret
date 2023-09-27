@@ -8,7 +8,7 @@ import cv2
 from PIL import Image, ImageTk
 from turret.motor import Motor,Direction
 
-motor_driver = Motor(direction_pin=23, pull_pin=18, 
+motor_driver = Motor(direction_pin=23, pulse_pin=18, 
                      frequency=2000, microstep='4')
 
 # Function to update the camera feed
@@ -44,7 +44,13 @@ def right():
     motor_driver.drive(800, Direction.CLOCKWISE)
     print("Right")
 
-    
+def set_frequency(event):
+    motor_driver.set_frequency(frequency_slider.get())
+    revolution_time_label.setvar(motor_driver.get_period()*motor_driver.get__steps_per_revolutions()/8)
+    root.update_idletasks()
+
+    # Time for one step * steps per revolution
+    print(f'Seconds per round: {revolution_time}')
 
 # Create the main Tkinter window
 root = tk.Tk()
@@ -53,6 +59,11 @@ root.title("Laptop Webcam Controller")
 # Create the camera label
 camera_label = tk.Label(root)
 camera_label.pack(side="right", padx=10, pady=10)
+
+revolution_time = tk.StringVar()
+set_frequency(None)
+revolution_time_label = tk.Label(root)
+revolution_time_label.pack()
 
 # Create a frame for the d-pad buttons
 d_pad_frame = tk.Frame(root)
@@ -75,6 +86,8 @@ right_button.grid(row=1, column=2)
 autoaim_button = tk.Button(root, text="Toggle Autoaim", command=toggle_autoaim)
 confirm_target_button = tk.Button(root, text="Confirm Target", command=confirm_target)
 fire_button = tk.Button(root, text="Fire", command=fire)
+frequency_slider = tk.Scale(root, from_=1, to=13*10**3, command=set_frequency)
+frequency_slider.pack()
 
 autoaim_button.pack(side="bottom", padx=10, pady=10)
 confirm_target_button.pack(side="bottom", padx=10, pady=10)
