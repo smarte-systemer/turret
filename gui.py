@@ -46,7 +46,7 @@ def right():
 
 def set_frequency(event):
     motor_driver.set_frequency(frequency_slider.get())
-    revolution_time_label.setvar(str(motor_driver.get_period()*motor_driver.get__steps_per_revolutions()/8))
+    revolution_time.set(str(f'Sun gear period: {round(motor_driver.get_period()*motor_driver.get__steps_per_revolutions()*8, 4)} seconds'))
     root.update_idletasks()
 
     # Time for one step * steps per revolution
@@ -61,7 +61,7 @@ camera_label = tk.Label(root)
 camera_label.pack(side="right", padx=10, pady=10)
 
 revolution_time = tk.StringVar()
-revolution_time_label = tk.Label(root)
+revolution_time_label = tk.Label(root, textvariable=revolution_time)
 revolution_time_label.pack()
 
 # Create a frame for the d-pad buttons
@@ -85,7 +85,7 @@ right_button.grid(row=1, column=2)
 autoaim_button = tk.Button(root, text="Toggle Autoaim", command=toggle_autoaim)
 confirm_target_button = tk.Button(root, text="Confirm Target", command=confirm_target)
 fire_button = tk.Button(root, text="Fire", command=fire)
-frequency_slider = tk.Scale(root, from_=1, to=13*10**3, command=set_frequency)
+frequency_slider = tk.Scale(root, from_=1, to=3*10**3, command=set_frequency)
 frequency_slider.set('1000')
 frequency_slider.pack()
 set_frequency(None)
