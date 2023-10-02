@@ -44,14 +44,25 @@ class Motor:
         """
         current_position = cam_center
         target_position = object_coordinate - current_position
+        
+        # Tolerance is set in function-call. Tolerance is the distance in pixels from center to accepted range of object
         while(abs(target_position) > tolerance):
             target_position = self.pid_regulator.calculate(target_position, current_position)
             
             # This communicates with mechanical components. The stepper motors needs to be done with the previous movement before they can be called again.
             # The time they take needs to be calculated before called upon again. 
+
+            # Simple test case for checking target_position from pid-regulator. This can be implementet "prettier"
+            if abs(target_position) > 300:
+                self.set_frequency(300)
+            elif abs(target_position) < 50:
+                self.set_frequency(50)
+            else: self.set_frequency(target_position)
+            
+            # Test for negative values (rotation to the left or pitch downwards)
             if (target_position < 0): 
-                self.drive(target_position, Direction.COUNTERCLOCKWISE) # If the target_position calculated is negative
-            else: self.drive(target_position) # Positive values
+                self.drive(1, Direction.COUNTERCLOCKWISE)
+            else: self.drive(1)
         
         
     def drive(self, steps: int, direction: Direction = Direction.CLOCKWISE):
