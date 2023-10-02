@@ -1,6 +1,8 @@
 import RPi.GPIO as GPIO
 from time import sleep
 from enum import Enum
+from PIDRegulator import PIDRegulator
+
 
 
 class Direction(Enum):
@@ -17,17 +19,39 @@ class Motor:
         pulse_pin: Pin used to pulse
         direction_pin: Pin used to assign direction
         frequency: Frequency to pulse, higher -> faster.
+        pid_regulator: PID used for calculating necessary movement
         microstep: Which mirostep setting. Defaults '200' 
     """
-    def __init__(self, pulse_pin: int, direction_pin: int, frequency: int, microstep: str = '200') -> None:
+    def __init__(self, pulse_pin: int, direction_pin: int, frequency: int, pid_regulator: PIDRegulator, microstep: str = '200') -> None:
         self.__pulse_pin = pulse_pin
         self.__direction_pin = direction_pin
         self.__period = 1/frequency
         self.__steps_per_revolutions = self.__get_revolutions(microstep)
+        self.pid_regulator = pid_regulator
         print(self.__steps_per_revolutions)
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.__pulse_pin, GPIO.OUT)
         GPIO.setup(self.__direction_pin, GPIO.OUT)
+        
+    
+    def update(self, object_coordinate: int, cam_center: int, tolerance: int):
+        """Update function called when object is detected
+        
+        Args: 
+            object_coordinate: Position coordinate for detected object
+            cam_center: Coordinate for camera center. Only read once.
+            tolerance: Tolerance for wanted target for PID-calculation
+        """
+        current_position = cam_center
+        target_position = object_coordinate - current_position
+        while(abs(target_position) > tolerance):
+            target_position = self.pid_regulator.calculate(target_position, current_position)
+            
+            # This communicates with mechanical components. The stepper motors needs to be done with the previous movement before they can be called again.
+            # The time they take needs to be calculated before called upon again. 
+            if (target_position < 0): 
+                self.drive(target_position, Direction.COUNTERCLOCKWISE) # If the target_position calculated is negative
+            else: self.drive(target_position) # Positive values
         
         
     def drive(self, steps: int, direction: Direction = Direction.CLOCKWISE):
