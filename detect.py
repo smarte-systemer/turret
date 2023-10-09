@@ -66,7 +66,7 @@ def run(model: str, width: int, height: int, num_threads: int) -> None:
     input_tensor = vision.TensorImage.create_from_array(rgb_image)
 
     # Run object detection estimation using the model.
-    detection_result = detector.detect(np.flatten(input_tensor))
+    detection_result = detector.detect(input_tensor)
 
     # Draw keypoints and edges on input image
     image = process_image(image, detection_result)

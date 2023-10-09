@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 from time import sleep
 from enum import Enum
-from PIDRegulator import PIDRegulator
+#from PIDRegulator import PIDRegulator
 
 
 
@@ -42,14 +42,17 @@ class Motor:
     # The function should be implemented so it continuosly gets camera-input and can verify movement.
     def move_to_target(self, object_coordinates, cam_center, tolerance):
         pxl_distance = object_coordinates - cam_center
+        print(pxl_distance)
         steps_rev = 6400
         # As long as distance is less than tolerance and microsteps is set to 32.
         while(abs(pxl_distance) > tolerance and steps_rev == self.__steps_per_revolutions):
             if (pxl_distance < 0):
-                self.drive(1 * 6, Direction.COUNTERCLOCKWISE) # Multiplies by 6 since 6 steps approximately is 1 pixel.
+                #print("counter clockwise")
+                #self.drive(1 * 6, Direction.COUNTERCLOCKWISE) # Multiplies by 6 since 6 steps approximately is 1 pixel.
                 pxl_distance += 1
             elif (pxl_distance > 0):
-                self.drive(1 * 6, Direction.CLOCKWISE)  # Multiplies by 6 since 6 steps approximately is 1 pixel.
+                #self.drive(1 * 6, Direction.CLOCKWISE)  # Multiplies by 6 since 6 steps approximately is 1 pixel.
+                #print("clockwise")
                 pxl_distance -= 1
 
         
