@@ -1,7 +1,15 @@
 numpy
-opencv-python
+#opencv-python
 ultralytics
 tk
 socket
 pickle
 pillow
+#tflite-model-maker
+#opencv-python-headless==4.1.2.30
+opencv-python-headless
+#opencv-python
+#ultralytics
+#tensorflow==2.8.0
+tensorflow
+pycocotools
