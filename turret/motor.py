@@ -21,12 +21,14 @@ class Motor:
         frequency: Frequency to pulse, higher -> faster.
         pid_regulator: PID used for calculating necessary movement
         microstep: Which mirostep setting. Defaults '200' 
-    """
+"""  #shared_queue, shared_queue_semaphore as parameters in init at a later stage
     def __init__(self, pulse_pin: int, direction_pin: int, frequency: int,  microstep: str = '32') -> None:
         self.__pulse_pin = pulse_pin
         self.__direction_pin = direction_pin
         self.__period = 1/frequency
         self.__steps_per_revolutions = self.__get_revolutions(microstep)
+        #self.shared_queue = shared_queue
+        #self.shared_queue_semaphore = shared_queue_semaphore
         #self.pid_regulator = pid_regulator
         print(self.__steps_per_revolutions)
         GPIO.setmode(GPIO.BCM)
