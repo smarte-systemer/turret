@@ -8,6 +8,7 @@ import cv2
 
 #THESE SHOULD  BE ORGANIZED IN SEPARATE FILES. I ONLY USE ONE FILE ATM
 
+#The shared_queue_semaphore should be passed as parameter to constructors
 shared_queue_semaphore = multiprocessing.Semaphore()
 
 class CameraFeed:
@@ -83,7 +84,7 @@ class GUI:
 
             # I think this works when checking for the coordinates and draw rectangles?
             if not self.shared_queue.empty():
-                self.shared_queue_semaphore.acquire()
+                self.shared_queue_semaphore.acquire() 
                 x1, y1, x2, y2 = self.shared_queue.get()
                 self.shared_queue_semaphore.release()
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 3)
@@ -100,8 +101,10 @@ class GUI:
 
 
 
-# HERE WE NEED A CLASS  FOR THE OBJECTDETECTION-MODEL. IT SHOULD HAVE SHARED_QUEUE AND SHARED_QUEUE_SEMAPHORE AS A PARAMETER FOR CREATING THE OBJECT
-# THE OBJECT SHOULD HAVE A METHOD LIKE DETECT_OBJECT_FROM_FRAME OR SOMETHING WHICH PUTS THE OBJECT COORDIATES TO THE shared_queue THAT CAN BE READ BY GUI AND BY MOTOR
+# HERE WE NEED A CLASS  FOR THE OBJECT DETECTION-MODEL. 
+# IT SHOULD HAVE SHARED_QUEUE AND SHARED_QUEUE_SEMAPHORE AS A PARAMETER FOR CREATING THE OBJECT
+# THE OBJECT SHOULD HAVE A METHOD LIKE DETECT_OBJECT_FROM_FRAME OR SOMETHING
+# WHICH PUTS THE OBJECT COORDIATES TO THE shared_queue THAT CAN BE READ BY GUI AND BY MOTOR
 
 def main():
     shared_queue = multiprocessing.Queue()
@@ -110,6 +113,8 @@ def main():
     camera_feed = CameraFeed()
     gui = GUI(camera_feed, shared_queue, shared_queue_semaphore)
     detectionmodel = DetectionModel(camera_feed, shared_queue, shared_queue_semaphore)
+    
+    ## The Motor should also have shared_queue as parameter in constructor. We need to implement a run-function as well which such as gui and detectionmodel
     azimuthmotor = Motor()
     
     azimuthmotor.run()
