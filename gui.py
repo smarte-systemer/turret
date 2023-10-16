@@ -9,7 +9,7 @@ from PIL import Image, ImageTk
 from turret.motor import Motor,Direction
 
 motor_driver = Motor(direction_pin=23, pulse_pin=18, 
-                     frequency=2000, microstep='1')
+                     frequency=2000, microstep='32')
 
 # Function to update the camera feed
 def update_camera_feed():
@@ -38,10 +38,10 @@ def fire():
     print("Fire!!!!!!")
 
 def left():
-    motor_driver.drive_revolution(1)
+    motor_driver.drive_revolution(1, 0)
     print("Left")
 def right():
-    motor_driver.drive_revolution(1, Direction.CCW)
+    motor_driver.drive_revolution(1, 1)
     print("Right")
 
 def set_frequency(event):
@@ -85,7 +85,7 @@ right_button.grid(row=1, column=2)
 autoaim_button = tk.Button(root, text="Toggle Autoaim", command=toggle_autoaim)
 confirm_target_button = tk.Button(root, text="Confirm Target", command=confirm_target)
 fire_button = tk.Button(root, text="Fire", command=fire)
-frequency_slider = tk.Scale(root, from_=1, to=3*10**3, command=set_frequency)
+frequency_slider = tk.Scale(root, from_=1, to=6*10**3, command=set_frequency)
 frequency_slider.set('1000')
 frequency_slider.pack()
 set_frequency(None)

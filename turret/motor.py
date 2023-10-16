@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 from time import sleep
 from enum import Enum
-from PIDRegulator import PIDRegulator
+#from PIDRegulator import PIDRegulator
 
 
 
@@ -21,12 +21,14 @@ class Motor:
         frequency: Frequency to pulse, higher -> faster.
         pid_regulator: PID used for calculating necessary movement
         microstep: Which mirostep setting. Defaults '200' 
-    """
+"""  #shared_queue, shared_queue_semaphore as parameters in init at a later stage
     def __init__(self, pulse_pin: int, direction_pin: int, frequency: int,  microstep: str = '32') -> None:
         self.__pulse_pin = pulse_pin
         self.__direction_pin = direction_pin
         self.__period = 1/frequency
         self.__steps_per_revolutions = self.__get_revolutions(microstep)
+        #self.shared_queue = shared_queue
+        #self.shared_queue_semaphore = shared_queue_semaphore
         #self.pid_regulator = pid_regulator
         print(self.__steps_per_revolutions)
         GPIO.setmode(GPIO.BCM)
@@ -42,14 +44,17 @@ class Motor:
     # The function should be implemented so it continuosly gets camera-input and can verify movement.
     def move_to_target(self, object_coordinates, cam_center, tolerance):
         pxl_distance = object_coordinates - cam_center
+        print(pxl_distance)
         steps_rev = 6400
         # As long as distance is less than tolerance and microsteps is set to 32.
         while(abs(pxl_distance) > tolerance and steps_rev == self.__steps_per_revolutions):
             if (pxl_distance < 0):
-                self.drive(1 * 6, Direction.COUNTERCLOCKWISE) # Multiplies by 6 since 6 steps approximately is 1 pixel.
+                #print("counter clockwise")
+                #self.drive(1 * 6, Direction.COUNTERCLOCKWISE) # Multiplies by 6 since 6 steps approximately is 1 pixel.
                 pxl_distance += 1
             elif (pxl_distance > 0):
-                self.drive(1 * 6, Direction.CLOCKWISE)  # Multiplies by 6 since 6 steps approximately is 1 pixel.
+                #self.drive(1 * 6, Direction.CLOCKWISE)  # Multiplies by 6 since 6 steps approximately is 1 pixel.
+                #print("clockwise")
                 pxl_distance -= 1
 
         
