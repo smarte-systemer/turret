@@ -22,7 +22,7 @@ class Camera:
         if ret:
             self.shared_frame.cv.acquire()
             try:
-                self.shared_frame.var = frame
+                self.shared_frame.set_var(frame)
                 self.shared_frame.cv.notify()
             finally:
                 self.shared_frame.cv.release()

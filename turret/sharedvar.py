@@ -12,3 +12,6 @@ class SharedVar:
     
     def get_var(self):
         return self.var
+
+    def set_var(self, var):
+        self.var = var
