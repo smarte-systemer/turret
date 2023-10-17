@@ -3,13 +3,13 @@ from PIL import Image, ImageTk
 import multiprocessing
 from turret.motor import Motor
 import cv2
-#from tflite_support.task import core, processor, vision
+from tflite_support.task import core, processor, vision
 
 
 #THESE SHOULD  BE ORGANIZED IN SEPARATE FILES. I ONLY USE ONE FILE ATM
 
 #The shared_queue_semaphore should be passed as parameter to constructors
-shared_queue_semaphore = multiprocessing.Semaphore()
+#shared_queue_semaphore = multiprocessing.Semaphore()
 
 class CameraFeed:
     def __init__(self, cam_index = 0):
@@ -101,7 +101,7 @@ class GUI:
 
 
 
-# HERE WE NEED A CLASS  FOR THE OBJECT DETECTION-MODEL. 
+# HERE WE NEED A CLASS FOR THE OBJECT DETECTION-MODEL. 
 # IT SHOULD HAVE SHARED_QUEUE AND SHARED_QUEUE_SEMAPHORE AS A PARAMETER FOR CREATING THE OBJECT
 # THE OBJECT SHOULD HAVE A METHOD LIKE DETECT_OBJECT_FROM_FRAME OR SOMETHING
 # WHICH PUTS THE OBJECT COORDIATES TO THE shared_queue THAT CAN BE READ BY GUI AND BY MOTOR
