@@ -6,10 +6,10 @@
 import tkinter as tk
 import cv2
 from PIL import Image, ImageTk
-from turret.motor import Motor,Direction
+#from turret.motor import Motor,Direction
 
-motor_driver = Motor(direction_pin=23, pulse_pin=18, 
-                     frequency=2000, microstep='32')
+#motor_driver = Motor(direction_pin=23, pulse_pin=18, 
+#                     frequency=2000, microstep='32')
 
 # Function to update the camera feed
 def update_camera_feed():
@@ -38,15 +38,15 @@ def fire():
     print("Fire!!!!!!")
 
 def left():
-    motor_driver.drive_revolution(1, 0)
+    #motor_driver.drive_revolution(1, 0)
     print("Left")
 def right():
-    motor_driver.drive_revolution(1, 1)
+    #motor_driver.drive_revolution(1, 1)
     print("Right")
 
 def set_frequency(event):
-    motor_driver.set_frequency(frequency_slider.get())
-    revolution_time.set(str(f'Sun gear period: {round(motor_driver.get_period()*motor_driver.get__steps_per_revolutions()*8, 4)} seconds'))
+    #motor_driver.set_frequency(frequency_slider.get())
+    #revolution_time.set(str(f'Sun gear period: {round(motor_driver.get_period()*motor_driver.get__steps_per_revolutions()*8, 4)} seconds'))
     root.update_idletasks()
 
     # Time for one step * steps per revolution

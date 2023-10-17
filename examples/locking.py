@@ -3,7 +3,7 @@ import threading, time
 
 class SharedVar:
     def __init__(self) -> None:
-        self.var = {}
+        self.var = 0
         self.cv = threading.Condition()
 
     
