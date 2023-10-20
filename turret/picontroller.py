@@ -7,7 +7,8 @@ import threading
 
 
 class PiController:
-    def __init__(self, gui: GUI, camera: Camera) -> None:
+    def __init__(self, shared_coord: SharedVar, gui: GUI, camera: Camera) -> None:
+        self.shared_coord = shared_coord
         self.gui = gui
         self.camera = camera
 
@@ -55,7 +56,7 @@ if __name__ == '__main__':
     gui = GUI.GUI(shared_frame, shared_coordinates)
     camera = Camera.Camera(shared_frame)
 
-    pi = PiController(gui, camera)
+    pi = PiController(shared_coordinates, gui, camera)
     pi.start()
     #pi_thread = threading.Thread(target=pi.run)
     #pi_thread.start()
