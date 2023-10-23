@@ -7,7 +7,7 @@ from tflite_support.task import vision
 import sharedvar as SharedVar
 class Detector:
     def __init__(self, frame: SharedVar, coordinates: SharedVar,model: str = '../object_detection/models/turret-syndrome-efficientdet_lite1.tflite',
-                 threads: int = 3, max_results: int = 10, score_threshold: float = 0.7) -> None:
+                 threads: int = 4, max_results: int = 10, score_threshold: float = 0.7) -> None:
         self.frame = frame
         self.coordinates = coordinates
         base_options = core.BaseOptions(
@@ -26,18 +26,20 @@ class Detector:
         Args:
             image: frame from stream to process
         """
-        print("Model: Process frame")
-        image = cv2.flip(image, 1)
+       # print("Model: Process frame")
+        #image = cv2.flip(image, 1)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         tensor = vision.TensorImage.create_from_array(image)
         result = self.model.detect(tensor)
         detections = [None]*len(result.detections)
-        for i in range(result.detections):
-            detections[i] = ((result.detections[i].bounding_box.origin_x,
+        for i in range(len(result.detections)):
+            detections[i] = [result.detections[i].bounding_box.origin_x,
                               result.detections[i].bounding_box.origin_y,
                               result.detections[i].bounding_box.origin_x + result.detections[i].bounding_box.width,
-                              result.detections[i].bounding_box.origin_y + result.detections[i].bounding_box.height), 
-                              result.categories[i].category_name)
+                              result.detections[i].bounding_box.origin_y + result.detections[i].bounding_box.height, 
+                              "ballon"]
+                              #result.categories[i].category_name)
+         #   print("########Model: Detection")
         self.coordinates.set_var(detections)
 
     def run(self):
@@ -45,14 +47,15 @@ class Detector:
         """
         while True:
             image = None
-            self.frame.cv.acquire()
-            try:
-                image = self.frame.get_var()
-                print("Model: Image found")
-                self.frame.cv.notify()
-            finally:
-                self.frame.cv.release()
+#            self.frame.cv.acquire()
+ #           try:
+  #              image = self.frame.get_var()
+   #             print("Model: Image found")
+    #            self.frame.cv.notify()
+     #       finally:
+     #           self.frame.cv.release()
+            image = self.frame.get_var()
             if image is not None:
-                print("Model: Setting coordinate")
+          #      print("Model: Setting coordinate")
                 self.set_coordinates(image)
     

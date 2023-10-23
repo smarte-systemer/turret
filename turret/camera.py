@@ -21,7 +21,7 @@ class Camera:
     def write_frame(self):
         ret, frame = self.cap.read()
         if ret:
-            print("Camera: Frame set")
+#            print("Camera: Frame set")
             self.shared_frame.set_var(frame)
             #self.shared_frame.cv.acquire()
             #cv2.imshow("", self.shared_frame.get_var())
