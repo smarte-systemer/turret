@@ -32,12 +32,17 @@ class PiController:
         gui.run()
 
     def calculate_azimuth_steps():
+        # Here we read shared_coordinates and use that for calculating azimuth motor-movement
+
         return
 
     def calculate_pitch_steps():
+        # Here we read shared_coordinates and use that for calculating pitch-movement
         return
 
     def trigger_fire_motor():
+        
+
         if (gui.isConfirmedTarget and gui.isFire):
             # Call trigger_motor
             # status = somereturnstatus?

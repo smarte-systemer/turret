@@ -20,13 +20,9 @@ class Camera:
     def write_frame(self):
         ret, frame = self.cap.read()
         if ret:
-            self.shared_frame.cv.acquire()
-            try:
-                self.shared_frame.set_var(frame)
-                self.shared_frame.cv.notify()
-            finally:
-                self.shared_frame.cv.release()
-    
+            self.shared_frame.set_var(frame)
+        else:
+            print("No data in frame")
     def release(self):
         self.cap.release()
 
