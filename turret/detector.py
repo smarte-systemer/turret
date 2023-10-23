@@ -26,6 +26,7 @@ class Detector:
         Args:
             image: frame from stream to process
         """
+
         image = cv2.flip(image, 1)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         tensor = vision.TensorImage.create_from_array(image)
@@ -43,5 +44,11 @@ class Detector:
         """Function to continuously run.
         """
         while True:
+            self.frame.cv.acquire()
+            try:
+                image = self.frame.get_var()
+                self.frame.cv.notify()
+            finally:
+                self.frame.cv.release()
             self.set_coordinates(self.frame.get_var())
     

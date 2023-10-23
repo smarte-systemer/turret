@@ -52,7 +52,6 @@ class PiController:
             
 
 if __name__ == '__main__':
-
     shared_frame = SharedVar.SharedVar()
     shared_coordinates = SharedVar.SharedVar()
     gui = GUI.GUI(shared_frame, shared_coordinates)
