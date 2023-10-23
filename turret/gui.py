@@ -85,12 +85,19 @@ class GUI:
                 
                 # Acquires the coordinates
                 self.shared_coor.cv.acquire()
-                x1, y1, x2, y2 = self.shared_coor.var #Stores coordinates in four variables
+
+                # Coordinates is stored in format ((x1, y1, x2, y2), object_type)
+                x1 = self.shared_coord[0][0]
+                y1 = self.shared_coord[0][1]
+                x2 = self.shared_coord[0][2]
+                y2 = self.shared_coord[0][3]
+                object_type = self.share_coord[1]
+                #x1, y1, x2, y2 = self.shared_coor.var #Stores coordinates in four variables
                 # object_id = self.shared_coor.var.second?
                 self.shared_coor.cv.release()
 
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 3)
-                cv2.putText(frame, "object_ID", (x1 + 10, y1 + 10), cv2.FONT_HERSHEY_PLAIN, 1, (0,0,255), 1)
+                cv2.putText(frame, object_type, (x1 + 10, y1 + 10), cv2.FONT_HERSHEY_PLAIN, 1, (0,0,255), 1)
             image = Image.fromarray(frame)
             photo = ImageTk.PhotoImage(image=image)
             self.camera_label.config(image=photo)
