@@ -1,17 +1,18 @@
 #import motor as Motor
 import gui as GUI
-import sharedvar as SharedVar
+from turret.sharedvar import SharedVar
 import camera as Camera
 #import model
+from turret.detector import Detector
 import threading
 
 
 class PiController:
-    def __init__(self, shared_coord: SharedVar, gui: GUI, camera: Camera) -> None:
+    def __init__(self, shared_coord: SharedVar, gui: GUI, camera: Camera, model: Detector) -> None:
         self.shared_coord = shared_coord
         self.gui = gui
         self.camera = camera
-
+        self.model = model
         #self.azimuth_motor = motor()
         #self.pitch_motor = motor()
         #self.trigger_motor = motor()
@@ -30,6 +31,7 @@ class PiController:
         self.gui_thread.start()
         gui.root.mainloop()
         gui.run()
+        self.model_thread = threading.Thread(target=self.model.run)
 
     def calculate_azimuth_steps():
         return
@@ -55,8 +57,8 @@ if __name__ == '__main__':
     shared_coordinates = SharedVar.SharedVar()
     gui = GUI.GUI(shared_frame, shared_coordinates)
     camera = Camera.Camera(shared_frame)
-
-    pi = PiController(shared_coordinates, gui, camera)
+    model = Detector(shared_frame, shared_coordinates)
+    pi = PiController(shared_coordinates, gui, camera, model)
     pi.start()
     #pi_thread = threading.Thread(target=pi.run)
     #pi_thread.start()

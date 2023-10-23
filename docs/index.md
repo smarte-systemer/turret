@@ -16,7 +16,11 @@
 ```{toctree}
 :caption: 'Contents:'
 :maxdepth: 4
-
+picontroller
+gui
+pid
+camera
+model
 communication
 motor/motor
 ```
