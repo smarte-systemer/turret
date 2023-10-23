@@ -7,7 +7,7 @@ import camera as Camera
 #from turret.detector import Detector
 #import detector as Detector
 import threading
-
+import time
 
 class PiController:
     def __init__(self, shared_coord: SharedVar, gui: GUI, camera: Camera) -> None:
@@ -28,10 +28,11 @@ class PiController:
 
     def start(self):
         self.camera_thread = threading.Thread(target=self.camera.run)
-        self.gui_thread = threading.Thread(target=self.gui.run)
+    #    self.gui_thread = threading.Thread(target=self.gui.run)
+    #    self.gui_thread.start() 
         self.camera_thread.start()
-        self.gui_thread.start()
-        gui.root.mainloop()
+        time.sleep(2)
+#        gui.root.mainloop()
         gui.run()
         #self.model_thread = threading.Thread(target=self.model.run)
 

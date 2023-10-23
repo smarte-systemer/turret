@@ -11,12 +11,19 @@ class SharedVar:
             return True
     
     def get_var(self):
-        return self.var
+        with self.cv:
+            return self.var
 
     def set_var(self, var):
-        self.cv.acquire()
-        try:
+        with self.cv:
             self.var = var
             self.cv.notify()
-        finally:
-            self.cv.release()
+
+
+        # self.cv.acquire()
+       # self.cv.wait()
+       # try:
+       #     self.var = var
+       #     self.cv.notify()
+       # finally:
+       #     self.cv.release()

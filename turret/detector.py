@@ -17,7 +17,7 @@ class Detector:
         options = vision.ObjectDetectorOptions(base_options=base_options, 
                                                detection_options=detection_options)
         self.model = vision.ObjectDetector.create_from_options(options)
-
+        print("Model: init done")
 
     def set_coordinates(self, image: cv2.typing.MatLike):
         """Sets coordinates for detected objects in SharedVar object
@@ -26,7 +26,7 @@ class Detector:
         Args:
             image: frame from stream to process
         """
-
+        print("Model: Process frame")
         image = cv2.flip(image, 1)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         tensor = vision.TensorImage.create_from_array(image)
@@ -44,11 +44,15 @@ class Detector:
         """Function to continuously run.
         """
         while True:
+            image = None
             self.frame.cv.acquire()
             try:
                 image = self.frame.get_var()
+                print("Model: Image found")
                 self.frame.cv.notify()
             finally:
                 self.frame.cv.release()
-            self.set_coordinates(self.frame.get_var())
+            if image is not None:
+                print("Model: Setting coordinate")
+                self.set_coordinates(image)
     

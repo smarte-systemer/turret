@@ -72,32 +72,34 @@ class GUI:
         self.isFire = val
 
     def update_camera_feed(self):
-
-        self.shared_frame.cv.acquire()
-        frame = self.shared_frame.var
-        self.shared_frame.cv.release()
-
+        print("GUI: Update camera feed")
+        #self.shared_frame.cv.acquire()
+        #frame = self.shared_frame.var
+        #self.shared_frame.cv.release()
+        frame = None
+        frame = self.shared_frame.get_var()
+        print("GUI: SharedVar released")
         if frame is not None:
+            print("GUI: Frame found")
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            
             # I think this works when checking for the coordinates and draw rectangles?
-            if not self.shared_coor.empty():
-                
+            #if not self.shared_coor.empty():
+            #    print("GUI: Coordinates found")
                 # Acquires the coordinates
-                self.shared_coor.cv.acquire()
+            #    self.shared_coor.cv.acquire()
 
                 # Coordinates is stored in format ((x1, y1, x2, y2), object_type)
-                x1 = self.shared_coord[0][0]
-                y1 = self.shared_coord[0][1]
-                x2 = self.shared_coord[0][2]
-                y2 = self.shared_coord[0][3]
-                object_type = self.share_coord[1]
+             #   x1 = self.shared_coord[0][0]
+              #  y1 = self.shared_coord[0][1]
+              #  x2 = self.shared_coord[0][2]
+              #  y2 = self.shared_coord[0][3]
+              #  object_type = self.share_coord[1]
                 #x1, y1, x2, y2 = self.shared_coor.var #Stores coordinates in four variables
                 # object_id = self.shared_coor.var.second?
-                self.shared_coor.cv.release()
+               # self.shared_coor.cv.release()
 
-                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 3)
-                cv2.putText(frame, object_type, (x1 + 10, y1 + 10), cv2.FONT_HERSHEY_PLAIN, 1, (0,0,255), 1)
+              #  cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 3)
+              #  cv2.putText(frame, object_type, (x1 + 10, y1 + 10), cv2.FONT_HERSHEY_PLAIN, 1, (0,0,255), 1)
             image = Image.fromarray(frame)
             photo = ImageTk.PhotoImage(image=image)
             self.camera_label.config(image=photo)
@@ -105,4 +107,7 @@ class GUI:
             self.camera_label.after(10, self.update_camera_feed)  # Update every 10 milliseconds
     
     def run(self):
-        self.root.after(10, self.update_camera_feed)
+        self.update_camera_feed()
+#        self.camera_label.after(30, self.update_camera_feed)  # Update every 10 milliseconds
+#        self.root.after(30, self.update_camera_feed)
+        self.root.mainloop()
