@@ -3,7 +3,7 @@ from PIL import Image, ImageTk
 import cv2
 #from turret.sharedvar import SharedVar
 import sharedvar as SharedVar
-
+from detection import Detection
 
 
 
@@ -71,6 +71,13 @@ class GUI:
     def set_fire(self, val: bool):
         self.isFire = val
 
+
+    def visulize_detection(self, coordinate: Detection, frame: cv2.typing.MatLike)->cv2.typing.MatLike:
+        bottom_left = coordinate.get_bottom_left()
+        cv2.rectangle(frame, bottom_left, coordinate.get_top_right(), (0, 0, 255), 3)
+        cv2.circle(frame, coordinate.get_center(), 1, (0,0,255), thickness=1)
+        cv2.putText(frame, coordinate.get_name(), (bottom_left[0]+ 10, bottom_left[1] + 10), cv2.FONT_HERSHEY_PLAIN, 1, (0,0,255), 1)
+        return frame
     def update_camera_feed(self):
 #        print("GUI: Update camera feed")
         #self.shared_frame.cv.acquire()
@@ -84,24 +91,27 @@ class GUI:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             # I think this works when checking for the coordinates and draw rectangles?
             
-            coordinate = self.shared_coor.get_var()
-            if len(coordinate):
+            coordinates = self.shared_coor.get_var()
+            if len(coordinates):
    #             print("GUI: Coordinates found")
                 # Acquires the coordinates
             #    self.shared_coor.cv.acquire()
 
                 # Coordinates is stored in format ((x1, y1, x2, y2), object_type)
-                x1 = coordinate[0][0]
-                y1 = coordinate[0][1]
-                x2 = coordinate[0][2]
-                y2 = coordinate[0][3]
-                object_type = coordinate[0][4]
+                # x1 = coordinate[0][0]
+                # y1 = coordinate[0][1]
+                # x2 = coordinate[0][2]
+                # y2 = coordinate[0][3]
+                # object_type = coordinate[0][4]
                 #x1, y1, x2, y2 = self.shared_coor.var #Stores coordinates in four variables
                 # object_id = self.shared_coor.var.second?
                # self.shared_coor.cv.release()
                 #frame = cv2.flip(frame, 1)
-                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 3)
-                cv2.putText(frame, object_type, (x1 + 10, y1 + 10), cv2.FONT_HERSHEY_PLAIN, 1, (0,0,255), 1)
+                # cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 3)
+                # cv2.putText(frame, object_type, (x1 + 10, y1 + 10), cv2.FONT_HERSHEY_PLAIN, 1, (0,0,255), 1)
+                for coordinate in coordinates:
+                    self.visulize_detection(coordinate, frame)
+    
             image = Image.fromarray(frame)
             photo = ImageTk.PhotoImage(image=image)
             self.camera_label.config(image=photo)

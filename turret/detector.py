@@ -2,7 +2,7 @@ import cv2
 from tflite_support.task import core
 from tflite_support.task import processor
 from tflite_support.task import vision
-
+from detection import Detection
 #from turret.sharedvar import SharedVar
 import sharedvar as SharedVar
 class Detector:
@@ -31,13 +31,19 @@ class Detector:
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         tensor = vision.TensorImage.create_from_array(image)
         result = self.model.detect(tensor)
-        detections = [None]*len(result.detections)
+        detections = [Detection]*len(result.detections)
         for i in range(len(result.detections)):
-            detections[i] = [result.detections[i].bounding_box.origin_x,
-                              result.detections[i].bounding_box.origin_y,
-                              result.detections[i].bounding_box.origin_x + result.detections[i].bounding_box.width,
-                              result.detections[i].bounding_box.origin_y + result.detections[i].bounding_box.height, 
-                              "ballon"]
+            detections[i] = Detection(
+                (result.detections[i].bounding_box.origin_x, result.detections[i].bounding_box.origin_y),
+                (result.detections[i].bounding_box.origin_x + result.detections[i].bounding_box.width, 
+                 result.detections[i].bounding_box.origin_y + result.detections[i].bounding_box.height),
+                 "Ballon"
+                )
+            # detections[i] = [result.detections[i].bounding_box.origin_x,
+            #                   result.detections[i].bounding_box.origin_y,
+            #                   result.detections[i].bounding_box.origin_x + result.detections[i].bounding_box.width,
+            #                   result.detections[i].bounding_box.origin_y + result.detections[i].bounding_box.height, 
+            #                   "ballon"]
                               #result.categories[i].category_name)
          #   print("########Model: Detection")
         self.coordinates.set_var(detections)
