@@ -1,8 +1,8 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 import cv2
-from turret.sharedvar import SharedVar
-
+#from turret.sharedvar import SharedVar
+import sharedvar as SharedVar
 
 
 

@@ -1,9 +1,11 @@
 #import motor as Motor
 import gui as GUI
-from turret.sharedvar import SharedVar
+import sharedvar as SharedVar
+#from turret.sharedvar import SharedVar
 import camera as Camera
 #import model
-from turret.detector import Detector
+#from turret.detector import Detector
+import detector as Detector
 import threading
 
 
@@ -61,7 +63,7 @@ if __name__ == '__main__':
     shared_coordinates = SharedVar.SharedVar()
     gui = GUI.GUI(shared_frame, shared_coordinates)
     camera = Camera.Camera(shared_frame)
-    model = Detector(shared_frame, shared_coordinates)
+    model = Detector.Detector(shared_frame, shared_coordinates)
     pi = PiController(shared_coordinates, gui, camera, model)
     pi.start()
     #pi_thread = threading.Thread(target=pi.run)

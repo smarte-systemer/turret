@@ -1,17 +1,17 @@
 import cv2
-# from tflite_support.task import core
-# from tflite_support.task import processor
-# from tflite_support.task import vision
+from tflite_support.task import core
+from tflite_support.task import processor
+from tflite_support.task import vision
 
-from turret.sharedvar import SharedVar
-
+#from turret.sharedvar import SharedVar
+import sharedvar as SharedVar
 class Detector:
-    def __init__(self, frame: SharedVar, coordinates: SharedVar,model: str = 'object_detection/models/turret-syndrome-efficientdet_lite1.tflite',
+    def __init__(self, frame: SharedVar, coordinates: SharedVar,model: str = '../object_detection/models/turret-syndrome-efficientdet_lite1.tflite',
                  threads: int = 3, max_results: int = 10, score_threshold: float = 0.7) -> None:
         self.frame = frame
         self.coordinates = coordinates
         base_options = core.BaseOptions(
-                        model=model, num_threads=threads)
+                        file_name=model, num_threads=threads)
         detection_options = processor.DetectionOptions(
                             max_results=max_results, score_threshold=score_threshold)
         options = vision.ObjectDetectorOptions(base_options=base_options, 

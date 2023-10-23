@@ -17,6 +17,6 @@ class SharedVar:
         self.cv.acquire()
         try:
             self.var = var
-            self.frame.cv.notify()
+            self.cv.notify()
         finally:
             self.cv.release()
