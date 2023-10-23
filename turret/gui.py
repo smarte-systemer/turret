@@ -1,14 +1,14 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 import cv2
-import sharedvar
+from turret.sharedvar import SharedVar
 
 
 
 
 
 class GUI:
-    def __init__(self, sharedFrame: sharedvar, sharedCoor: sharedvar):
+    def __init__(self, sharedFrame: SharedVar, sharedCoor: SharedVar):
         self.shared_frame = sharedFrame
         self.shared_coor = sharedCoor
 

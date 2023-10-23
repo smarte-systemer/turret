@@ -14,4 +14,9 @@ class SharedVar:
         return self.var
 
     def set_var(self, var):
-        self.var = var
+        self.cv.acquire()
+        try:
+            self.var = var
+            self.frame.cv.notify()
+        finally:
+            self.cv.release()

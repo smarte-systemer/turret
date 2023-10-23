@@ -1,8 +1,8 @@
 import cv2
-import sharedvar
+from turret.sharedvar import SharedVar
 
 class Camera:
-    def __init__(self, sharedFrame: sharedvar, cam_index = 0):
+    def __init__(self, sharedFrame: SharedVar, cam_index = 0):
         self.shared_frame = sharedFrame
         self.camera_index = cam_index
         self.cap = cv2.VideoCapture(self.camera_index)
