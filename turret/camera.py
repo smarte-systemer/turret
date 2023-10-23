@@ -1,8 +1,8 @@
 import cv2
-#from turret.sharedvar import SharedVar
 import sharedvar as SharedVar
+
 class Camera:
-    def __init__(self, sharedFrame: SharedVar, cam_index = -1):
+    def __init__(self, sharedFrame: SharedVar, cam_index = 0):
         self.shared_frame = sharedFrame
         self.camera_index = cam_index
         self.cap = cv2.VideoCapture(self.camera_index)
@@ -23,6 +23,7 @@ class Camera:
             self.shared_frame.set_var(frame)
         else:
             print("No data in frame")
+
     def release(self):
         self.cap.release()
 
