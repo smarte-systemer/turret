@@ -73,9 +73,9 @@ class GUI:
 
 
     def visulize_detection(self, coordinate: Detection, frame: cv2.typing.MatLike)->cv2.typing.MatLike:
-        bottom_left = coordinate.get_bottom_left()
-        cv2.rectangle(frame, bottom_left, coordinate.get_top_right(), (0, 0, 255), 3)
-        cv2.circle(frame, coordinate.get_center(), 1, (0,0,255), thickness=1)
+        bottom_left = coordinate.get_bottom_left().get()
+        cv2.rectangle(frame, bottom_left, coordinate.get_top_right().get(), (0, 0, 255), 3)
+        cv2.circle(frame, coordinate.get_center().get(), 10, (0,0,255), thickness=1)
         cv2.putText(frame, coordinate.get_name(), (bottom_left[0]+ 10, bottom_left[1] + 10), cv2.FONT_HERSHEY_PLAIN, 1, (0,0,255), 1)
         return frame
     def update_camera_feed(self):

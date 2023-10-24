@@ -34,9 +34,9 @@ class Detector:
         detections = [Detection]*len(result.detections)
         for i in range(len(result.detections)):
             detections[i] = Detection(
-                (result.detections[i].bounding_box.origin_x, result.detections[i].bounding_box.origin_y),
-                (result.detections[i].bounding_box.origin_x + result.detections[i].bounding_box.width, 
-                 result.detections[i].bounding_box.origin_y + result.detections[i].bounding_box.height),
+                result.detections[i].bounding_box.origin_x, result.detections[i].bounding_box.origin_y,
+                result.detections[i].bounding_box.origin_x + result.detections[i].bounding_box.width, 
+                 result.detections[i].bounding_box.origin_y + result.detections[i].bounding_box.height,
                  "Ballon"
                 )
             # detections[i] = [result.detections[i].bounding_box.origin_x,

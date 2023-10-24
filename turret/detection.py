@@ -2,22 +2,24 @@ class Coordinate:
     def __init__(self, x,y) -> None:
         self.x = x
         self.y = y
-    def __init__(self, coordinate: tuple)->None:
-        self.x = coordinate[0]
-        self.y = coordinate[1]
+#    def __init__(self, coordinate: tuple)->None:
+#        self.x = coordinate[0]
+#        self.y = coordinate[1]
     def get(self)->tuple:
         return (self.x, self.y)
 
 class Detection:
     """Class to represent a detection made by the model
     """
-    def __init__(self, bottom_left: tuple, top_right: tuple, name: str) -> None:
-        self.__bottom_left = Coordinate(bottom_left)
-        self.__top_right = Coordinate(top_right)
+    #def __init__(self, bottom_left: tuple, top_right: tuple, name: str) -> None:
+    #    self.__bottom_left = Coordinate(bottom_left)
+    #    self.__top_right = Coordinate(top_right)
+    #    self.__name = name
+    def __init__(self, x1: int,y1: int ,x2: int, y2: int, name: str) -> None:
+    #    self.__init__((x1, y1) , (x2, y2), name)
+        self.__bottom_left = Coordinate(x1,y1)
+        self.__top_right = Coordinate(x2,y2)
         self.__name = name
-    # def __init__(self, x1: int,y1: int ,x2: int, y2: int, name: str) -> None:
-    #     self.__init__((x1, y1) , (x2, y2), name)
-
     def get_bottom_left(self)->Coordinate:
         """Gets bottom left coordinate of the detection box
 
@@ -45,8 +47,8 @@ class Detection:
         Returns:
             Coordinate with center point
         """
-        x_center = self.__bottom_left.x + self.__top_right.x/2
-        y_center = self.__bottom_left.y + self.__top_right.y/2
+        x_center = round((self.__top_right.x - self.__bottom_left.x)/2 + self.__bottom_left.x)
+        y_center = round((self.__top_right.y - self.__bottom_left.y)/2 + self.__bottom_left.y)
         return Coordinate(x_center, y_center)
 
     
