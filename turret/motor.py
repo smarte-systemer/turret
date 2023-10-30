@@ -27,6 +27,7 @@ class Motor:
         self.__direction_pin = direction_pin
         self.__period = 1/frequency
         self.__steps_per_revolutions = self.__get_revolutions(microstep)
+        self.__microstep = microstep
         #self.shared_queue = shared_queue
         #self.shared_queue_semaphore = shared_queue_semaphore
         #self.pid_regulator = pid_regulator
@@ -35,8 +36,9 @@ class Motor:
         GPIO.setup(self.__pulse_pin, GPIO.OUT)
         GPIO.setup(self.__direction_pin, GPIO.OUT)
 
-    
-
+    def get_microstep(self)->int:
+        microstep = ''.join(d for d in self.__microstep if d.isdigit())
+        return int(microstep)
         
     # This function can be called from where the object_coordinates is send.
     # It is precalculated how many steps a pixel is. (6 steps = 1 pixel on camera with FOV 80 and 1080p)
