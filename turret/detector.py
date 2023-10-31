@@ -7,7 +7,7 @@ from detection import Detection
 import sharedvar as SharedVar
 class Detector:
     def __init__(self, frame: SharedVar, coordinates: SharedVar,model: str = '../object_detection/models/turret-syndrome-efficientdet_lite1.tflite',
-                 threads: int = 4, max_results: int = 10, score_threshold: float = 0.7) -> None:
+                 threads: int = 2, max_results: int = 10, score_threshold: float = 0.7) -> None:
         self.frame = frame
         self.coordinates = coordinates
         base_options = core.BaseOptions(

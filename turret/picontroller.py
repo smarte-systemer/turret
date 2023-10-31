@@ -16,7 +16,7 @@ class PiController:
         self.gui = gui
         self.camera = camera
         self.model = model
-        self.azimuth_motor = motor(direction_pin=23, pulse_pin=18, 
+        self.azimuth_motor = motor.Motor(direction_pin=23, pulse_pin=18, 
                      frequency=200, microstep='32')
         #self.pitch_motor = motor()
         #self.trigger_motor = motor()
@@ -37,8 +37,10 @@ class PiController:
 #        gui.root.mainloop()
         self.model_thread = threading.Thread(target=self.model.run)
         self.model_thread.start()
+        self.pi_thread = threading.Thread(target=self.run)
+        self.pi_thread.start()
         gui.run()
-        self.run()
+
 
 
 
@@ -46,26 +48,34 @@ class PiController:
         # 33.75 Pitch FOV
         # FOV/ horizontal pixels
         deg_per_pixel = fov/pixels
-        planet_gear_rotation_per_step = 1.8 / motor.get_microstep()
+        planet_gear_rotation_per_step = 1.8 / microstep
         sun_gear_rotation = planet_gear_rotation_per_step * 1/8
         return round(deg_per_pixel / sun_gear_rotation)
 
     def move_to_target(self, tolerance):
-        coordinates = shared_coordinates.get_var()    
+        print("Move to target start")
+        coordinates = shared_coordinates.get_var()  
+        if not len(coordinates):
+            print("No detections")
+            return
+        print(coordinates[0].get_center().get())
         object_coordinates = coordinates[0].get_center().get()[0]
-        cam_center = 1280/2
+        print(object_coordinates)
+        cam_center = self.camera.get_resolution()[0]/2
+        resolution = self.camera.get_resolution()
+        print(f"resolution{self.camera.get_resolution()}")
         pxl_distance = object_coordinates - cam_center
         print(pxl_distance)
         steps_rev = 6400
         # As long as distance is less than tolerance and microsteps is set to 32.
-        while(abs(pxl_distance) > tolerance and steps_rev == self.__steps_per_revolutions):
+        while(abs(pxl_distance) > tolerance):
             print(f"pxl_distance{pxl_distance}")
             if (pxl_distance < 0):
-                self.azimuth_motor.drive(self.pixel_to_step(1280, 60, self.azimuth_motor.get_microstep()), motor.Direction.COUNTERCLOCKWISE)
-                #self.drive(1 * 6, Direction.COUNTERCLOCKWISE) # Multiplies by 6 since 6 steps approximately is 1 pixel.
+                self.azimuth_motor.drive(self.pixel_to_step(resolution[0]*10, 60, self.azimuth_motor.get_microstep()), motor.Direction.COUNTERCLOCKWISE)
+    #            #self.drive(1 * 6, Direction.COUNTERCLOCKWISE) # Multiplies by 6 since 6 steps approximately is 1 pixel.
                 pxl_distance += 1
             elif (pxl_distance > 0):
-                self.azimuth_motor.drive(self.pixel_to_step(1280, 60, self.azimuth_motor.get_microstep()), motor.Direction.CLOCKWISE)
+                self.azimuth_motor.drive(self.pixel_to_step(resolution[0]*10, 60, self.azimuth_motor.get_microstep()), motor.Direction.CLOCKWISE)
                 #self.drive(1 * 6, Direction.CLOCKWISE)  # Multiplies by 6 since 6 steps approximately is 1 pixel.
                 #print("clockwise")
                 pxl_distance -= 1
@@ -101,9 +111,13 @@ class PiController:
 
     
     def run(self):
-       while True:
-           self.move_to_target(50)
-           time.sleep(10)
+        time.sleep(4)
+        #self.azimuth_motor.drive(2000, 1)
+
+        self.azimuth_motor.drive_pwm(100, 1)
+        # while True:
+       #    self.move_to_target(50)
+       #    time.sleep(2)
            
             
 

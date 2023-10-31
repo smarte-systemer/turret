@@ -15,7 +15,10 @@ class Camera:
         if not ret:
             return None
         return frame
-    
+    def get_resolution(self):
+        width = self.cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+        height = self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        return (width, height)
     
     # Function that writes frame to shared variable
     def write_frame(self):

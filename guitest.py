@@ -6,10 +6,10 @@
 import tkinter as tk
 import cv2
 from PIL import Image, ImageTk
-#from turret.motor import Motor,Direction
+from turret.motor import Motor,Direction
 
-#motor_driver = Motor(direction_pin=23, pulse_pin=18, 
-#                     frequency=2000, microstep='32')
+motor_driver = Motor(direction_pin=23, pulse_pin=18, 
+                     frequency=200, microstep='32')
 
 # Function to update the camera feed
 def update_camera_feed():
@@ -38,10 +38,11 @@ def fire():
     print("Fire!!!!!!")
 
 def left():
+    motor_driver.drive(100*32, 0)
     #motor_driver.drive_revolution(1, 0)
     print("Left")
 def right():
-    #motor_driver.drive_revolution(1, 1)
+    motor_driver.drive(100*32, 1)
     print("Right")
 
 def set_frequency(event):
