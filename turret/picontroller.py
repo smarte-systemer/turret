@@ -19,7 +19,7 @@ class PiController:
         self.model = model
         self.azimuth_motor = motor.Motor(direction_pin=23, pulse_pin=18, 
                      frequency=200, microstep='32')
-        self.mcu = mcu.Microcontroller(115200)
+        self.mcu = mcu.Microcontroller(115200, 'FT232R USB UART')
         #self.pitch_motor = motor()
         #self.trigger_motor = motor()
         
@@ -82,7 +82,7 @@ class PiController:
         y_direction = 0 if y_pxl_distance > 0 else 1
         if (x_pxl_distance < tolerance) and (y_pxl_distance < tolerance):
             return
-        self.mcu.send(abs(self.pixel_to_step_azimuth(x_pxl_distance, 44, 32)), x_direction,  abs(self.pixel_to_step_pitch(y_pxl_distance)), y_direction)
+        self.mcu.send_position(abs(self.pixel_to_step_azimuth(x_pxl_distance, 44, 32)), x_direction,  abs(self.pixel_to_step_pitch(y_pxl_distance)), y_direction)
         ok = False
         while(not ok):
             output = self.mcu.check_for_response()

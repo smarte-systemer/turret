@@ -24,6 +24,7 @@ model
 communication
 motor/motor
 interpolation
+mcu
 ```
 
 # Indices and tables

@@ -1,8 +1,8 @@
-# pid
+# picontroller
 
 
 ```{eval-rst}
-.. automodule:: turret.PIDRegulator
+.. automodule:: turret.picontroller
    :members:
    :undoc-members:
    :show-inheritance:

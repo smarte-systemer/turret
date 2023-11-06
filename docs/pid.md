@@ -2,7 +2,7 @@
 
 
 ```{eval-rst}
-.. automodule:: turret.model
+.. automodule:: turret.PIDRegulator
    :members:
    :undoc-members:
    :show-inheritance:
