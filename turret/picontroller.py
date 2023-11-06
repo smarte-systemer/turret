@@ -10,6 +10,7 @@ import threading
 import time
 import detection
 import motor
+import mcu
 class PiController:
     def __init__(self, shared_coord: SharedVar, gui: GUI, camera: Camera) -> None:
         self.shared_coord = shared_coord
@@ -18,6 +19,7 @@ class PiController:
         self.model = model
         self.azimuth_motor = motor(direction_pin=23, pulse_pin=18, 
                      frequency=200, microstep='32')
+        self.mcu = mcu.Microcontroller(115200)
         #self.pitch_motor = motor()
         #self.trigger_motor = motor()
         
@@ -55,20 +57,29 @@ class PiController:
         object_coordinates = coordinates[0].get_center().get()[0]
         cam_center = 1280/2
         pxl_distance = object_coordinates - cam_center
-        print(pxl_distance)
-        steps_rev = 6400
-        # As long as distance is less than tolerance and microsteps is set to 32.
-        while(abs(pxl_distance) > tolerance and steps_rev == self.__steps_per_revolutions):
-            print(f"pxl_distance{pxl_distance}")
-            if (pxl_distance < 0):
-                self.azimuth_motor.drive(self.pixel_to_step(1280, 60, self.azimuth_motor.get_microstep()), motor.Direction.COUNTERCLOCKWISE)
-                #self.drive(1 * 6, Direction.COUNTERCLOCKWISE) # Multiplies by 6 since 6 steps approximately is 1 pixel.
-                pxl_distance += 1
-            elif (pxl_distance > 0):
-                self.azimuth_motor.drive(self.pixel_to_step(1280, 60, self.azimuth_motor.get_microstep()), motor.Direction.CLOCKWISE)
-                #self.drive(1 * 6, Direction.CLOCKWISE)  # Multiplies by 6 since 6 steps approximately is 1 pixel.
-                #print("clockwise")
-                pxl_distance -= 1
+        direction = 1 if pxl_distance > 0 else 0
+        self.mcu.send(self.pixel_to_step(pxl_distance, 30, 1), direction, 0,0)
+        ok = False
+        while(not ok):
+            output = self.mcu.check_for_response()
+            if output:
+                print(output)
+                # ok = True
+            time.sleep(0.2)
+        # print(pxl_distance)
+        # steps_rev = 6400
+        # # As long as distance is less than tolerance and microsteps is set to 32.
+        # while(abs(pxl_distance) > tolerance and steps_rev == self.__steps_per_revolutions):
+        #     print(f"pxl_distance{pxl_distance}")
+        #     if (pxl_distance < 0):
+        #         self.azimuth_motor.drive(self.pixel_to_step(1280, 60, self.azimuth_motor.get_microstep()), motor.Direction.COUNTERCLOCKWISE)
+        #         #self.drive(1 * 6, Direction.COUNTERCLOCKWISE) # Multiplies by 6 since 6 steps approximately is 1 pixel.
+        #         pxl_distance += 1
+        #     elif (pxl_distance > 0):
+        #         self.azimuth_motor.drive(self.pixel_to_step(1280, 60, self.azimuth_motor.get_microstep()), motor.Direction.CLOCKWISE)
+        #         #self.drive(1 * 6, Direction.CLOCKWISE)  # Multiplies by 6 since 6 steps approximately is 1 pixel.
+        #         #print("clockwise")
+        #         pxl_distance -= 1
 
     def calculate_azimuth_steps(detection: detection.Detection):
         # Here we read shared_coordinates and use that for calculating azimuth motor-movement
