@@ -23,6 +23,7 @@ camera
 model
 communication
 motor/motor
+interpolation
 ```
 
 # Indices and tables

@@ -111,7 +111,8 @@ class GUI:
                 # cv2.putText(frame, object_type, (x1 + 10, y1 + 10), cv2.FONT_HERSHEY_PLAIN, 1, (0,0,255), 1)
                 for coordinate in coordinates:
                     self.visulize_detection(coordinate, frame)
-    
+             
+            cv2.circle(frame, (int(640/2), int(480/2)), 10, (0,0,255), thickness=1)
             image = Image.fromarray(frame)
             photo = ImageTk.PhotoImage(image=image)
             self.camera_label.config(image=photo)
