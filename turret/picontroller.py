@@ -64,6 +64,25 @@ class PiController:
         # sun_gear_rotation = planet_gear_rotation_per_step * 1/8
         return round(degree_rotation / sun_gear_rotation)
 
+    def move_turret(self, leftMove: bool, rightMove: bool, upMove: bool, downMove: bool):
+        if leftMove:
+            #mcu.send right
+            gui.isLeftButton = False
+            print("Turret move: Left")
+        if rightMove:
+            #mcu.send left
+            gui.isRightButton = False
+            print("Turret move: Right")
+        if upMove:
+            #mcu.send up
+            gui.isUpButton = False
+            print("Turret move: Up")
+        if downMove:
+            #mcu.send down
+            gui.isDownButton = False
+            print("Turret move: Down")
+
+
     def move_to_target(self, tolerance):
         print("Move to target start")
         coordinates = shared_coordinates.get_var()  
@@ -108,18 +127,24 @@ class PiController:
             pass
         return
 
-    def calculate_pitch_steps():
-        # Here we read shared_coordinates and use that for calculating pitch-movement
-        return
+    def check_fire(self):
+        if gui.isConfirmedTarget:
+            print("TARGET CONFIRMED")
+            print_one = True
+            while ((not gui.isFire) and gui.isConfirmedTarget):
+                if print_one:
+                    print("PRESS FIRE OR UNCONFIRM")
+                    print_one = False
+                if gui.isFire:
+                    print("FIRE")
+                    #mcu.send trigger stuff
+                    gui.isFire = False
+                    gui.isConfirmedTarget = False
+        elif not gui.isConfirmedTarget and gui.isFire:
+            print("MUST CONFIRM TARGET BEFORE FIRE")
+            gui.isFire = False
 
-    def trigger_fire_motor():
-        if (gui.isConfirmedTarget and gui.isFire):
-            # Call trigger_motor
-            # status = somereturnstatus?
-            print("Status")
-            gui.set_fire(False)
 
-    
     def run(self):
         time.sleep(4)
         #self.azimuth_motor.drive(2000, 1)
@@ -134,8 +159,14 @@ class PiController:
         #             ok = True
         #     time.sleep(0.2)
         while True:
-#            time.sleep(5)
-            self.move_to_target(5)
+            if not gui.isAutoaim:
+                # Check arrow functions
+                self.move_turret(gui.isLeftButton, gui.isRightButton, gui.isUpButton, gui.isDownButton)
+                self.check_fire()
+            else:
+                self.move_to_target(5)
+                self.check_fire()
+
 
 if __name__ == '__main__':
     shared_frame = SharedVar.SharedVar()
@@ -147,4 +178,3 @@ if __name__ == '__main__':
     pi.start()
     #pi_thread = threading.Thread(target=pi.run)
     #pi_thread.start()
-    

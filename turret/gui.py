@@ -15,6 +15,10 @@ class GUI:
         self.isAutoaim = False
         self.isConfirmedTarget = False
         self.isFire = False
+        self.isLeftButton = False
+        self.isRightButton = False
+        self.isUpButton = False
+        self.isDownButton = False
 
         self.root = tk.Tk()
         self.root.title("Webcam Controller")
@@ -29,10 +33,10 @@ class GUI:
         # Create the d-pad buttons with custom appearance
         button_size = 4  # Adjust the size as needed
 
-        up_button = tk.Button(d_pad_frame, text="▲", font=("Helvetica", 24), width=button_size, height=button_size)
-        down_button = tk.Button(d_pad_frame, text="▼", font=("Helvetica", 24), width=button_size, height=button_size)
-        left_button = tk.Button(d_pad_frame, text="◄", font=("Helvetica", 24), width=button_size, height=button_size, command=tk.LEFT)
-        right_button = tk.Button(d_pad_frame, text="►", font=("Helvetica", 24), width=button_size, height=button_size, command=tk.RIGHT)
+        up_button = tk.Button(d_pad_frame, text="▲", font=("Helvetica", 24), width=button_size, height=button_size, command=self.set_up_button)
+        down_button = tk.Button(d_pad_frame, text="▼", font=("Helvetica", 24), width=button_size, height=button_size, command=self.set_down_button)
+        left_button = tk.Button(d_pad_frame, text="◄", font=("Helvetica", 24), width=button_size, height=button_size, command=self.set_left_button)
+        right_button = tk.Button(d_pad_frame, text="►", font=("Helvetica", 24), width=button_size, height=button_size, command=self.set_right_button)
 
         up_button.grid(row=0, column=1)
         down_button.grid(row=2, column=1)
@@ -55,7 +59,6 @@ class GUI:
             print("Autoaim: ON")
         else:
             print("Autoaim: OFF")
-        
 
     def toggle_confirm_target(self):
         self.isConfirmedTarget = not self.isConfirmedTarget
@@ -68,8 +71,32 @@ class GUI:
         self.isFire = True
         print("FIRING")
 
-    def set_fire(self, val: bool):
-        self.isFire = val
+    def set_fire(self):
+        self.isFire = True
+
+    def set_left_button(self):
+        if not self.isAutoaim:
+            self.isLeftButton = True
+        else:
+            print("Toggle Autoaim OFF for manual move")
+
+    def set_right_button(self):
+        if not self.isAutoaim:
+            self.isRightButton = True
+        else:
+            print("Toggle Autoaim OFF for manual move")
+
+    def set_up_button(self):
+        if not self.isAutoaim:
+            self.isUpButton = True
+        else:
+            print("Toggle Autoaim OFF for manual move")
+
+    def set_down_button(self):
+        if not self.isAutoaim:
+            self.isDownButton = True
+        else:
+            print("Toggle Autoaim OFF for manual move")
 
 
     def visulize_detection(self, coordinate: Detection, frame: cv2.typing.MatLike)->cv2.typing.MatLike:
