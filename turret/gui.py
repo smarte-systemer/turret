@@ -20,6 +20,9 @@ class GUI:
         self.isUpButton = False
         self.isDownButton = False
 
+        self.calibrate = False
+        self.home = False
+
         self.root = tk.Tk()
         self.root.title("Webcam Controller")
         self.camera_label = tk.Label(self.root)
@@ -47,6 +50,7 @@ class GUI:
         autoaim_button = tk.Button(self.root, text="Toggle Autoaim", command=self.toggle_autoaim)
         confirm_target_button = tk.Button(self.root, text="Confirm Target", command=self.toggle_confirm_target)
         fire_button = tk.Button(self.root, text="Fire", command=self.call_fire)
+        calibrate_button = tk.Button(self.root, text="Calibrate", command=self.set_calibration)
 
         autoaim_button.pack(side="bottom", padx=10, pady=10)
         confirm_target_button.pack(side="bottom", padx=10, pady=10)
@@ -79,7 +83,10 @@ class GUI:
             self.isLeftButton = True
         else:
             print("Toggle Autoaim OFF for manual move")
-
+    def set_calibration(self):
+        self.calibrate = True
+    def home(self):
+        self.home = True
     def set_right_button(self):
         if not self.isAutoaim:
             self.isRightButton = True

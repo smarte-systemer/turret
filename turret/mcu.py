@@ -1,6 +1,10 @@
 import serial
 import serial.tools.list_ports
 import json
+import time
+
+PITCH_MAXIMUM = 4000
+PITCH_MINIMUM = -4000
 class Microcontroller:
     def __init__(self, baud, signature) -> None:
         available_ports = serial.tools.list_ports.comports()
@@ -9,6 +13,7 @@ class Microcontroller:
             if signature in port.description:
                 self.port = serial.Serial(port.device, baud)
         if self.port is None: raise Exception("Unable to find mcu")
+        self.__pitch_steps_from_calibration_point = 0
         #self.port.open()
         
     def check_for_response(self):
@@ -25,8 +30,9 @@ class Microcontroller:
         """
         self.port.write(bytes(json.dumps({"T":1}).encode('utf-8')))
         print(f'sending: {json.dumps({"T":1})}')
-
-    def send_position(self, azimuth_steps: int, azimuth_direction: bool, pitch_steps: int, pitch_direction: bool):
+    def __clamp(self, value, lower, upper):
+        return min(max(value, lower), upper)
+    def send_position(self, azimuth_steps: int, pitch_steps: int):
         """Send position to microcontroller.
 
         Args:
@@ -35,17 +41,50 @@ class Microcontroller:
             pitch_steps: steps to write to pitch motor
             pitch_direction: Direction for the pitch motor to drive in.
         """
+        
+        azimuth_direction = 1 if azimuth_steps > 0 else 0
+        pitch_direction = 1 if pitch_steps > 0 else 0
+        
+        if pitch_steps > 0:
+            pitch_direction = 1
+            if self.__pitch_steps_from_calibration_point + pitch_steps > PITCH_MAXIMUM:
+                pitch_steps = PITCH_MAXIMUM - self.__pitch_steps_from_calibration_point
+                self.__pitch_steps_from_calibration_point = PITCH_MAXIMUM
+            else:
+                self.__pitch_steps_from_calibration_point += pitch_steps
+        elif pitch_steps < 0:
+            if self.__pitch_steps_from_calibration_point - pitch_steps < PITCH_MINIMUM:
+                pitch_steps = PITCH_MINIMUM - self.__pitch_steps_from_calibration_point
+        self.__pitch_steps_from_calibration_point += pitch_steps
         msg = {
             "A":
             {
-                "S": azimuth_steps,
+                "S": abs(azimuth_steps),
                 "D": azimuth_direction
             },
             "P":
             {
-                "S": pitch_steps,
+                "S": abs(pitch_steps),
                 "D": pitch_direction
             }
         }
         print(f"Sending: {json.dumps(msg)}")
         self.port.write(bytes(json.dumps(msg).encode('utf-8')))
+
+        def calibrate_pitch(self):
+            self.__pitch_steps_from_calibration_point = 0
+        def home_pitch(self):
+            self.send_position(0,self.__pitch_steps_from_calibration_point*(-1))
+            ok = False
+            timestamp = time.time()
+            while(not ok):
+                output = self.mcu.check_for_response()
+                if output:
+                    print(output)
+                    if output == "Done":
+                        ok = True
+                elif (time.time() - timestamp).seconds >= 10:
+                    print("Unable to confirm position, mcu timed out")
+                    break
+                time.sleep(0.2)
+                

@@ -68,18 +68,22 @@ class PiController:
         if leftMove:
             #mcu.send right
             gui.isLeftButton = False
+            self.mcu.send_position(100, 0)
             print("Turret move: Left")
         if rightMove:
             #mcu.send left
             gui.isRightButton = False
+            self.mcu.send_position(-100)
             print("Turret move: Right")
         if upMove:
             #mcu.send up
             gui.isUpButton = False
+            self.mcu.send_position(0, 100)
             print("Turret move: Up")
         if downMove:
             #mcu.send down
             gui.isDownButton = False
+            self.mcu.send_position(0,-100)
             print("Turret move: Down")
 
 
@@ -97,18 +101,22 @@ class PiController:
         x_pxl_distance = object_coordinates - cam_center
         y_pxl_distance = coordinates[0].get_center().get()[1] - self.camera.get_resolution()[1]/2
         x_pxl_distance = 1 if x_pxl_distance == 0 else x_pxl_distance
-        x_direction = 1 if x_pxl_distance > 0 else 0
-        y_direction = 0 if y_pxl_distance > 0 else 1
+        # x_direction = 1 if x_pxl_distance > 0 else 0
+        # y_direction = 0 if y_pxl_distance > 0 else 1
         if (x_pxl_distance < tolerance) and (y_pxl_distance < tolerance):
             return
-        self.mcu.send_position(abs(self.pixel_to_step_azimuth(x_pxl_distance, 44, 32)), x_direction,  abs(self.pixel_to_step_pitch(y_pxl_distance)), y_direction)
+        self.mcu.send_position(self.pixel_to_step_azimuth(x_pxl_distance, 44, 32),  self.pixel_to_step_pitch(y_pxl_distance))
         ok = False
+        timestamp = time.time()
         while(not ok):
             output = self.mcu.check_for_response()
             if output:
                 print(output)
                 if output == "Done":
                     ok = True
+            elif (time.time() - timestamp).seconds >= 10:
+                print("Unable to confirm position, mcu timed out")
+                break
             time.sleep(0.2)
 
     def calculate_azimuth_steps(detection: detection.Detection):
@@ -138,6 +146,21 @@ class PiController:
                 if gui.isFire:
                     print("FIRE")
                     #mcu.send trigger stuff
+                    self.mcu.shoot()
+                    ok = False
+                    timestamp = time.time()
+                    while(not ok):
+                        output = self.mcu.check_for_response()
+                        if output:
+                            print(f"Received: {output}")
+                            if output == "Fired":
+                                ok = True
+                            elif output == "Cannot fire, in reload state":
+                                ok = True
+                                break
+                        elif (time.time() - timestamp).seconds >= 10:
+                            print("Unable to confirm position, mcu timed out")
+                        time.sleep(0.2)
                     gui.isFire = False
                     gui.isConfirmedTarget = False
         elif not gui.isConfirmedTarget and gui.isFire:
@@ -163,6 +186,12 @@ class PiController:
                 # Check arrow functions
                 self.move_turret(gui.isLeftButton, gui.isRightButton, gui.isUpButton, gui.isDownButton)
                 self.check_fire()
+                if gui.calibrate:
+                    self.mcu.calibrate_pitch()
+                    gui.calibrate = False
+                if gui.home:
+                    self.mcu.home_pitch()
+                    gui.home = False
             else:
                 self.move_to_target(5)
                 self.check_fire()
