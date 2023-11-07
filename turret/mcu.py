@@ -44,18 +44,22 @@ class Microcontroller:
         
         azimuth_direction = 1 if azimuth_steps > 0 else 0
         pitch_direction = 1 if pitch_steps > 0 else 0
-        
-        if pitch_steps > 0:
-            pitch_direction = 1
-            if self.__pitch_steps_from_calibration_point + pitch_steps > PITCH_MAXIMUM:
-                pitch_steps = PITCH_MAXIMUM - self.__pitch_steps_from_calibration_point
-                self.__pitch_steps_from_calibration_point = PITCH_MAXIMUM
-            else:
-                self.__pitch_steps_from_calibration_point += pitch_steps
-        elif pitch_steps < 0:
-            if self.__pitch_steps_from_calibration_point - pitch_steps < PITCH_MINIMUM:
-                pitch_steps = PITCH_MINIMUM - self.__pitch_steps_from_calibration_point
-        self.__pitch_steps_from_calibration_point += pitch_steps
+        print(f"Pitch dir: {pitch_direction}")
+        print(f"Azimuth dir: {azimuth_steps}")
+        # if pitch_direction:
+        #         if self.__pitch_steps_from_calibration_point + pitch_steps > PITCH_MAXIMUM:
+        #             pitch_steps = PITCH_MAXIMUM - self.__pitch_steps_from_calibration_point
+        #             self.__pitch_steps_from_calibration_point = PITCH_MAXIMUM
+        #             print("Max pitch")
+        #         else:
+        #             self.__pitch_steps_from_calibration_point += pitch_steps
+        # else:
+        #     if self.__pitch_steps_from_calibration_point - pitch_steps < PITCH_MINIMUM:
+        #         pitch_steps = PITCH_MINIMUM - self.__pitch_steps_from_calibration_point
+        #         print("Minimum pitch")
+        #     else:
+        #         self.__pitch_steps_from_calibration_point += pitch_steps
+        print(f"Pitch pos: {self.__pitch_steps_from_calibration_point}")
         msg = {
             "A":
             {
@@ -78,12 +82,12 @@ class Microcontroller:
         ok = False
         timestamp = time.time()
         while(not ok):
-            output = self.mcu.check_for_response()
+            output = self.check_for_response()
             if output:
                 print(output)
                 if output == "Done":
                     ok = True
-            elif (time.time() - timestamp).seconds >= 10:
+            elif (time.time() - timestamp) >= 10:
                 print("Unable to confirm position, mcu timed out")
                 break
             time.sleep(0.2)

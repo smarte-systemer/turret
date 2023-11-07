@@ -29,7 +29,8 @@ class PiController:
         self.azimuth_thread = None
         self.pitch_thread = None
         self.model_thread = None
-        self.threads = [self.camera_thread, self.gui_thread, self.model_thread]
+        self.pi_thread = None
+        #self.threads = [self.camera_thread, self.model_thread]
 
     def start(self):
         self.camera_thread = threading.Thread(target=self.camera.run)
@@ -56,7 +57,7 @@ class PiController:
     def pixel_to_step_azimuth(self, pixels: int, fov: int, microstep: int):
         # 44 Azimuth FOV
         # FOV/ horizontal pixels
-        degree_rotation = abs(pixels) / (640/fov)
+        degree_rotation = pixels / (640/fov)
         # 1.8 degrees / microstep * 1/8 gear
         planet_gear_rotation = 1.8/microstep
         sun_gear_rotation = planet_gear_rotation * 1/8
@@ -74,7 +75,7 @@ class PiController:
         if rightMove:
             #mcu.send left
             gui.isRightButton = False
-            self.mcu.send_position(100)
+            self.mcu.send_position(100, 0)
             print("Turret move: Right")
         if upMove:
             #mcu.send up
@@ -100,12 +101,13 @@ class PiController:
         cam_center = self.camera.get_resolution()[0]/2
         print(f"resolution{self.camera.get_resolution()}")
         x_pxl_distance = object_coordinates - cam_center
-        y_pxl_distance = coordinates[0].get_center().get()[1] - self.camera.get_resolution()[1]/2
+        y_pxl_distance = self.camera.get_resolution()[1]/2 - coordinates[0].get_center().get()[1]
         x_pxl_distance = 1 if x_pxl_distance == 0 else x_pxl_distance
         # x_direction = 1 if x_pxl_distance > 0 else 0
         # y_direction = 0 if y_pxl_distance > 0 else 1
-        if (x_pxl_distance < tolerance) and (y_pxl_distance < tolerance):
+        if (abs(x_pxl_distance) < tolerance) and (abs(y_pxl_distance) < tolerance):
             return
+        print(f"x: {x_pxl_distance}, y: {y_pxl_distance}")
         self.mcu.send_position(self.pixel_to_step_azimuth(x_pxl_distance, 44, 32),  self.pixel_to_step_pitch(y_pxl_distance))
         ok = False
         timestamp = time.time()
@@ -115,7 +117,7 @@ class PiController:
                 print(output)
                 if output == "Done":
                     ok = True
-            elif (time.time() - timestamp).seconds >= 10:
+            elif (time.time() - timestamp) >= 10:
                 print("Unable to confirm position, mcu timed out")
                 break
             time.sleep(0.2)
@@ -159,7 +161,7 @@ class PiController:
                             elif output == "Cannot fire, in reload state":
                                 ok = True
                                 break
-                        elif (time.time() - timestamp).seconds >= 10:
+                        elif (time.time() - timestamp) >= 10:
                             print("Unable to confirm position, mcu timed out")
                         time.sleep(0.2)
                     gui.isFire = False
@@ -197,8 +199,14 @@ class PiController:
                 self.move_to_target(5)
                 self.check_fire()
             if gui.exit:
-                for thread in self.threads:
-                    thread.join()
+                # for thread in self.threads:
+                #     thread.join()
+                self.camera_thread.join()
+                self.model_thread.join()
+                self.pi_thread.join()
+                #self.gui_thread.join()
+                
+                break
 
 
 if __name__ == '__main__':

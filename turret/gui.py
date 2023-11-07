@@ -53,7 +53,7 @@ class GUI:
         confirm_target_button = tk.Button(self.root, text="Confirm Target", command=self.toggle_confirm_target)
         fire_button = tk.Button(self.root, text="Fire", command=self.call_fire)
         calibrate_button = tk.Button(self.root, text="Calibrate", command=self.set_calibration)
-        home_button = tk.Button(self.root, text="Home", command=self.home)
+        home_button = tk.Button(self.root, text="Home", command=self.activate_home)
 
         autoaim_button.pack(side="bottom", padx=10, pady=10)
         confirm_target_button.pack(side="bottom", padx=10, pady=10)
@@ -92,7 +92,7 @@ class GUI:
             print("Toggle Autoaim OFF for manual move")
     def set_calibration(self):
         self.calibrate = True
-    def home(self):
+    def activate_home(self):
         self.home = True
     def set_right_button(self):
         if not self.isAutoaim:
