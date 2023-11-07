@@ -22,6 +22,7 @@ class GUI:
 
         self.calibrate = False
         self.home = False
+        self.exit = False
 
         self.root = tk.Tk()
         self.root.title("Webcam Controller")
@@ -52,11 +53,14 @@ class GUI:
         confirm_target_button = tk.Button(self.root, text="Confirm Target", command=self.toggle_confirm_target)
         fire_button = tk.Button(self.root, text="Fire", command=self.call_fire)
         calibrate_button = tk.Button(self.root, text="Calibrate", command=self.set_calibration)
+        home_button = tk.Button(self.root, text="Home", command=self.home)
 
         autoaim_button.pack(side="bottom", padx=10, pady=10)
         confirm_target_button.pack(side="bottom", padx=10, pady=10)
         fire_button.pack(side="bottom", padx=10, pady=10)
-
+        calibrate_button.pack(side="bottom", padx=10, pady=10)
+        home_button.pack(side="bottom", padx=10, pady=10)
+        self.root.protocol("WM_DELETE_WINDOW", self.on_exit)
 
     def toggle_autoaim(self):
         self.isAutoaim = not self.isAutoaim
@@ -155,7 +159,12 @@ class GUI:
             self.camera_label.config(image=photo)
             self.camera_label.photo = photo
             self.camera_label.after(10, self.update_camera_feed)  # Update every 10 milliseconds
-    
+    def on_exit(self):
+        self.home = True
+        self.exit = True
+        self.root.destroy()
+
+
     def run(self):
         self.update_camera_feed()
 #        self.camera_label.after(30, self.update_camera_feed)  # Update every 10 milliseconds

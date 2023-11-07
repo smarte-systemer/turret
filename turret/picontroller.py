@@ -29,6 +29,7 @@ class PiController:
         self.azimuth_thread = None
         self.pitch_thread = None
         self.model_thread = None
+        self.threads = [self.camera_thread, self.gui_thread, self.model_thread]
 
     def start(self):
         self.camera_thread = threading.Thread(target=self.camera.run)
@@ -68,12 +69,12 @@ class PiController:
         if leftMove:
             #mcu.send right
             gui.isLeftButton = False
-            self.mcu.send_position(100, 0)
+            self.mcu.send_position(-100, 0)
             print("Turret move: Left")
         if rightMove:
             #mcu.send left
             gui.isRightButton = False
-            self.mcu.send_position(-100)
+            self.mcu.send_position(100)
             print("Turret move: Right")
         if upMove:
             #mcu.send up
@@ -195,6 +196,9 @@ class PiController:
             else:
                 self.move_to_target(5)
                 self.check_fire()
+            if gui.exit:
+                for thread in self.threads:
+                    thread.join()
 
 
 if __name__ == '__main__':
