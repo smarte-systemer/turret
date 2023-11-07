@@ -27,7 +27,8 @@ class GUI:
         self.root.title("Webcam Controller")
         self.camera_label = tk.Label(self.root)
         self.camera_label.pack(side="right", padx=10, pady=10)
-
+        self.state = tk.Label(self.root, text="Manual", bg="green")
+        self.state.pack(side=tk.TOP)
 
         # Create a frame for the d-pad buttons
         d_pad_frame = tk.Frame(self.root)
@@ -60,9 +61,11 @@ class GUI:
     def toggle_autoaim(self):
         self.isAutoaim = not self.isAutoaim
         if self.isAutoaim:
+            self.state.config(text="Autoaim")
             print("Autoaim: ON")
         else:
             print("Autoaim: OFF")
+            self.state.config(text="Manual")
 
     def toggle_confirm_target(self):
         self.isConfirmedTarget = not self.isConfirmedTarget
