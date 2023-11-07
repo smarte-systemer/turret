@@ -65,11 +65,11 @@ class GUI:
     def toggle_autoaim(self):
         self.isAutoaim = not self.isAutoaim
         if self.isAutoaim:
-            self.state.config(text="Autoaim")
+            self.state.config(text="Autoaim", bg="red")
             print("Autoaim: ON")
         else:
             print("Autoaim: OFF")
-            self.state.config(text="Manual")
+            self.state.config(text="Manual", bg="green")
 
     def toggle_confirm_target(self):
         self.isConfirmedTarget = not self.isConfirmedTarget
