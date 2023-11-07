@@ -71,20 +71,20 @@ class Microcontroller:
         print(f"Sending: {json.dumps(msg)}")
         self.port.write(bytes(json.dumps(msg).encode('utf-8')))
 
-        def calibrate_pitch(self):
-            self.__pitch_steps_from_calibration_point = 0
-        def home_pitch(self):
-            self.send_position(0,self.__pitch_steps_from_calibration_point*(-1))
-            ok = False
-            timestamp = time.time()
-            while(not ok):
-                output = self.mcu.check_for_response()
-                if output:
-                    print(output)
-                    if output == "Done":
-                        ok = True
-                elif (time.time() - timestamp).seconds >= 10:
-                    print("Unable to confirm position, mcu timed out")
-                    break
-                time.sleep(0.2)
+    def calibrate_pitch(self):
+        self.__pitch_steps_from_calibration_point = 0
+    def home_pitch(self):
+        self.send_position(0,self.__pitch_steps_from_calibration_point*(-1))
+        ok = False
+        timestamp = time.time()
+        while(not ok):
+            output = self.mcu.check_for_response()
+            if output:
+                print(output)
+                if output == "Done":
+                    ok = True
+            elif (time.time() - timestamp).seconds >= 10:
+                print("Unable to confirm position, mcu timed out")
+                break
+            time.sleep(0.2)
                 
