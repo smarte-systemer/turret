@@ -80,12 +80,12 @@ class PiController:
         if upMove:
             #mcu.send up
             gui.isUpButton = False
-            self.mcu.send_position(0, 100)
+            self.mcu.send_position(0, 5000)
             print("Turret move: Up")
         if downMove:
             #mcu.send down
             gui.isDownButton = False
-            self.mcu.send_position(0,-100)
+            self.mcu.send_position(0,-5000)
             print("Turret move: Down")
 
 
@@ -101,7 +101,7 @@ class PiController:
         cam_center = self.camera.get_resolution()[0]/2
         print(f"resolution{self.camera.get_resolution()}")
         x_pxl_distance = object_coordinates - cam_center
-        y_pxl_distance = self.camera.get_resolution()[1]/2 - coordinates[0].get_center().get()[1]
+        y_pxl_distance = self.camera.get_resolution()[1]/2 - (coordinates[0].get_center().get()[1]-60)
         x_pxl_distance = 1 if x_pxl_distance == 0 else x_pxl_distance
         # x_direction = 1 if x_pxl_distance > 0 else 0
         # y_direction = 0 if y_pxl_distance > 0 else 1
@@ -196,7 +196,7 @@ class PiController:
                     self.mcu.home_pitch()
                     gui.home = False
             else:
-                self.move_to_target(5)
+                self.move_to_target(15)
                 self.check_fire()
             if gui.exit:
                 # for thread in self.threads:

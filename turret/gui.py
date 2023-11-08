@@ -1,6 +1,7 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 import cv2
+import numpy as np
 #from turret.sharedvar import SharedVar
 import sharedvar as SharedVar
 from detection import Detection
@@ -27,16 +28,16 @@ class GUI:
         self.root = tk.Tk()
         self.root.title("Webcam Controller")
         self.camera_label = tk.Label(self.root)
-        self.camera_label.pack(side="right", padx=10, pady=10)
+        self.camera_label.pack(side="right", padx=7, pady=7)
         self.state = tk.Label(self.root, text="Manual", bg="green")
         self.state.pack(side=tk.TOP)
 
         # Create a frame for the d-pad buttons
         d_pad_frame = tk.Frame(self.root)
-        d_pad_frame.pack(side="left", padx=10, pady=10)
+        d_pad_frame.pack(side="left", padx=6, pady=6)
 
         # Create the d-pad buttons with custom appearance
-        button_size = 4  # Adjust the size as needed
+        button_size = 2  # Adjust the size as needed
 
         up_button = tk.Button(d_pad_frame, text="▲", font=("Helvetica", 24), width=button_size, height=button_size, command=self.set_up_button)
         down_button = tk.Button(d_pad_frame, text="▼", font=("Helvetica", 24), width=button_size, height=button_size, command=self.set_down_button)
@@ -55,13 +56,13 @@ class GUI:
         calibrate_button = tk.Button(self.root, text="Calibrate", command=self.set_calibration)
         home_button = tk.Button(self.root, text="Home", command=self.activate_home)
 
-        autoaim_button.pack(side="bottom", padx=10, pady=10)
-        confirm_target_button.pack(side="bottom", padx=10, pady=10)
-        fire_button.pack(side="bottom", padx=10, pady=10)
-        calibrate_button.pack(side="bottom", padx=10, pady=10)
-        home_button.pack(side="bottom", padx=10, pady=10)
+        autoaim_button.pack(side="bottom", padx=8, pady=10)
+        confirm_target_button.pack(side="bottom", padx=8, pady=10)
+        fire_button.pack(side="bottom", padx=8, pady=10)
+        calibrate_button.pack(side="bottom", padx=8, pady=10)
+        home_button.pack(side="bottom", padx=8, pady=10)
         self.root.protocol("WM_DELETE_WINDOW", self.on_exit)
-
+        self.root.geometry("800x460") #Resolution for PiDisplay - 20 in height for taskbar
     def toggle_autoaim(self):
         self.isAutoaim = not self.isAutoaim
         if self.isAutoaim:
@@ -74,7 +75,8 @@ class GUI:
     def toggle_confirm_target(self):
         self.isConfirmedTarget = not self.isConfirmedTarget
         if self.isConfirmedTarget:
-            print("Target CONFIRMED")
+            pass
+            #print("Target CONFIRMED")
         else:
             print("Target NOT CONFIRMED")
 
@@ -131,7 +133,6 @@ class GUI:
   #          print("GUI: Frame found")
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             # I think this works when checking for the coordinates and draw rectangles?
-            
             coordinates = self.shared_coor.get_var()
             if len(coordinates):
    #             print("GUI: Coordinates found")
@@ -152,11 +153,14 @@ class GUI:
                 # cv2.putText(frame, object_type, (x1 + 10, y1 + 10), cv2.FONT_HERSHEY_PLAIN, 1, (0,0,255), 1)
                 for coordinate in coordinates:
                     self.visulize_detection(coordinate, frame)
-             
-            cv2.circle(frame, (int(640/2), int(480/2)), 10, (0,0,255), thickness=1)
+            resize_width = 384
+            resize_height = 288
+            cv2.circle(frame, (int(640/2), int(480/2)+60), 10, (0,0,255), thickness=1)
+            frame = cv2.resize(frame, (resize_width, resize_height))
             image = Image.fromarray(frame)
+            #Resizing window for Tkinter output on Display
             photo = ImageTk.PhotoImage(image=image)
-            self.camera_label.config(image=photo)
+            self.camera_label.config(image=photo, height=resize_height, width=resize_width)
             self.camera_label.photo = photo
             self.camera_label.after(10, self.update_camera_feed)  # Update every 10 milliseconds
     def on_exit(self):
